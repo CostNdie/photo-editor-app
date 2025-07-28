@@ -9,6 +9,8 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@nuxtjs/auth-next": "^5.0.0-1667386184.dfbbb54",
+    "@nuxtjs/axios": "^5.13.6",
     "@toast-ui/vue-image-editor": "^3.15.2",
     "core-js": "^3.25.3",
     "fabric": "^6.7.1",

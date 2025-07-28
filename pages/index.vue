@@ -1,10 +1,14 @@
-<template>
-  <v-container fluid>
-    <client-only><ModernImageEditor /></client-only>
-  </v-container>
-</template>
-
 <script>
-import ModernImageEditor from '@/components/ModernImageEditor.vue'
-export default { components: { ModernImageEditor } }
+export default {
+  middleware: 'auth',
+  mounted() {
+    this.$router.replace('/home') // ✅ Redirect to your home.vue
+  }
+}
 </script>
+
+<template>
+  <div>
+    Redirecting to home...
+  </div>
+</template>
