@@ -1,0 +1,26 @@
+{
+  "name": "photo-editor-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@toast-ui/vue-image-editor": "^3.15.2",
+    "core-js": "^3.25.3",
+    "fabric": "^6.7.1",
+    "nuxt": "^2.15.8",
+    "tui-color-picker": "^2.2.8",
+    "tui-image-editor": "^3.15.3",
+    "vue": "^2.7.10",
+    "vue-server-renderer": "^2.7.10",
+    "vue-template-compiler": "^2.7.10",
+    "vuetify": "^2.6.10"
+  },
+  "devDependencies": {
+    "@nuxtjs/vuetify": "^1.12.3"
+  }
+}
