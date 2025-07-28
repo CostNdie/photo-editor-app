@@ -24,25 +24,25 @@
 
     <!-- Upload Section -->
     <v-row class="mt-4 mb-2 justify-center">
-  <v-col cols="12" class="d-flex justify-center">
-    <v-btn
-      color="blue"
-      dark
-      class="ma-2"
-      @click="$refs.fileInput.click()"
-    >
-      <v-icon left>mdi-image-plus</v-icon>
-      Upload a Photo
-    </v-btn>
-    <input
-      ref="fileInput"
-      type="file"
-      accept="image/*"
-      class="d-none"
-      @change="onImageUpload($event.target.files[0])"
-    />
-  </v-col>
-</v-row>
+      <v-col cols="12" class="d-flex justify-center">
+        <v-btn
+          color="blue"
+          dark
+          class="ma-2"
+          @click="$refs.fileInput.click()"
+        >
+          <v-icon left>mdi-image-plus</v-icon>
+          Upload a Photo
+        </v-btn>
+        <input
+          ref="fileInput"
+          type="file"
+          accept="image/*"
+          class="d-none"
+          @change="onImageUpload($event.target.files[0])"
+        />
+      </v-col>
+    </v-row>
 
     <!-- Bottom Tools -->
     <v-row class="tool-row mt-2 mb-2 justify-center" no-gutters>
@@ -72,13 +72,10 @@
         class="settings-panel px-4 pt-2 pb-4"
         v-if="activeTool === 'text' || activeTool === 'brightness'"
       >
-        <!-- Brightness -->
         <div v-if="activeTool === 'brightness'">
           <h4 class="white--text mb-2">Brightness</h4>
           <v-slider v-model="brightness" min="0" max="2" step="0.1" @input="drawImage" />
         </div>
-
-        <!-- Text -->
         <div v-if="activeTool === 'text'">
           <h4 class="white--text mb-2">Text Options</h4>
           <v-text-field
@@ -120,9 +117,21 @@ export default {
     }
   },
   mounted() {
+    this.updateCanvasSize()
+    window.addEventListener('resize', this.updateCanvasSize)
     this.drawPlaceholder()
   },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.updateCanvasSize)
+  },
   methods: {
+    updateCanvasSize() {
+      const maxWidth = Math.min(window.innerWidth - 32, 600)
+      const height = maxWidth * 2 / 3
+      this.containerWidth = maxWidth
+      this.containerHeight = height
+      if (this.originalImage) this.drawImage()
+    },
     selectTool(tool) {
       this.activeTool = this.activeTool === tool ? null : tool
     },
@@ -174,29 +183,24 @@ export default {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       ctx.save()
       ctx.filter = `brightness(${this.brightness})`
-
       const iw = this.originalImage.width
       const ih = this.originalImage.height
       const sw = iw * this.scale
       const sh = ih * this.scale
       const dx = (canvas.width - sw) / 2
       const dy = (canvas.height - sh) / 2
-
       if (this.flipped) {
         ctx.translate(canvas.width, 0)
         ctx.scale(-1, 1)
       }
-
       ctx.drawImage(this.originalImage, dx, dy, sw, sh)
       ctx.restore()
-
       if (this.cropping && this.cropStart && this.cropEnd) {
         const { x, y, w, h } = this.getCropRect()
         ctx.strokeStyle = 'blue'
         ctx.lineWidth = 2
         ctx.strokeRect(x, y, w, h)
       }
-
       if (this.text) {
         ctx.fillStyle = this.textColor
         ctx.font = `${this.fontSize}px Arial`
@@ -210,7 +214,6 @@ export default {
       tmp.width = w
       tmp.height = h
       tmp.getContext('2d').drawImage(this.$refs.canvas, x, y, w, h, 0, 0, w, h)
-
       const cropped = new Image()
       cropped.onload = () => {
         this.originalImage = cropped
@@ -294,8 +297,9 @@ export default {
 }
 
 .canvas-container {
-  width: 600px;
-  height: 400px;
+  width: 100%;
+  max-width: 600px;
+  aspect-ratio: 3 / 2;
   background-color: #2c2c2c;
   border: 2px dashed #555;
   display: flex;
@@ -312,6 +316,7 @@ canvas {
 
 .tool-row {
   flex-wrap: wrap;
+  justify-content: center;
   gap: 8px;
 }
 
@@ -320,6 +325,8 @@ canvas {
   border-radius: 12px;
   margin: 0 auto;
   max-width: 480px;
+  max-height: 50vh;
+  overflow-y: auto;
 }
 
 .quote {
